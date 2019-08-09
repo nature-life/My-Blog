@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% from 'bootstrap/form.html' import render_form %}
+
+{% block title %}分类管理{% endblock title %}
+
+{% block content %}
+<div class="page-header">
+    <h1 ><small class="text-muted">用户数量：{{ users|length }} 个</small>
+    </h1>
+</div>
+<table class="table table-striped">
+    <thead>
+    <tr>
+        <th>No.</th>
+        <th>用户名</th>
+        <th>昵称</th>
+        <th>权限</th>
+        <th>操作</th>
+    </tr>
+    </thead>
+    {% for user in users %}
+    <tr>
+        <td>{{ loop.index }}</td>
+        <td><a>{{ user.username }}</a></td>
+        <td>{{ user.name }}</td>
+        <td>
+            {% if user.is_superadmin %}
+            <span class="badge badge-primary" style="background-color:#ffc107">超管</span>
+            {% elif  user.is_admin%}
+                <span class="badge badge-primary" style="background-color:lawngreen">管理</span>
+            {% else %}
+                <span class="badge badge-primary">用户</span>
+            {% endif %}
+        </td>
+        <!-- 除默认第一个默认分类外都添加Edit和Delete按钮,设置到删除总是采用POST方法,防范CSRF攻击 -->
+        <td>
+            {%if current_user.is_superadmin  %}
+                <a class="btn btn-info btn-sm" href="{{ url_for('.upgrade_user', user_id = user.id)}}">升级</a>
+            {% endif %}
+            <form class="inline" method="post" action="{{ url_for('.delete_user', user_id = user.id)}}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('确定删除此用户？');">
+                    删除
+                </button>
+            </form>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+<p class="text-muted">Tips:删除用户同时删除用户文章，评论等。。
+
+</p>
+{% endblock content %}

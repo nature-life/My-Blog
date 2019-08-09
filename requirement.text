@@ -1,0 +1,10 @@
+flask
+WTForms
+Flask-WTF
+Flask-CKEditor
+SQLAlchemy
+Flask-Moment
+Faker
+Flask-Login
+pymysql
+Python-Dotenv
